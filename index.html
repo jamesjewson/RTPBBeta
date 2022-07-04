@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rooster Teeth Playlist Builder</title>
+</head>
+<body>
+    <main>
+        <button onclick="getInfo()">Get Playlist Info</button>
+    </main>
+
+
+
+    <script>
+        let pageCounter = 0;
+        // let fullPlaylist = []
+        let videoIdArray = []
+        function getInfo(){
+            fetch('https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId=UUsB0LwkHPWyjfZ-JwvtwEXw&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
+            .then(response => response.json())
+            .then(data => {
+                let playlist;
+                playlist = data
+                // console.log(data.items)
+                // fullPlaylist.push(data.items)  
+                if(playlist.nextPageToken !== null && playlist.nextPageToken !== ""){
+                    nextPage = playlist.nextPageToken
+                    getNextInfo(nextPage)
+                }
+            })
+        }
+        function getNextInfo(nextPageToken){
+            // console.log("next page");
+           fetch('https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&pageToken=' + nextPageToken + '&playlistId=UUsB0LwkHPWyjfZ-JwvtwEXw&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
+            .then(response => response.json())
+            .then(data => {
+                let playlist = data
+                // console.log(data.items)
+                let items = data.items
+                // console.log(items);
+                items.forEach(item => {
+                    // console.log(item.contentDetails.videoId);
+                    videoIdArray.push(item.contentDetails.videoId)
+                });
+                if(playlist.nextPageToken !== null && playlist.nextPageToken !== "" && playlist.nextPageToken !== undefined && pageCounter < 100){
+                    nextPage = playlist.nextPageToken
+                    getNextInfo(nextPage)
+                }else{
+                    //Here's the video ID array
+                    showVideoIds(videoIdArray)
+                    // console.log(videoIdArray);
+                }
+                
+            })
+        }
+
+
+        function showVideoIds(videoIdArray){
+            videoIdArray.forEach(id => {
+                // console.log(id);
+                fetch('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=' + id + '&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
+                    .then(response => response.json())
+                    .then(data => {
+                        //Video array with info
+                        console.log(data)
+                    })
+                //Get videos based on ID
+            });
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
