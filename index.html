@@ -15,7 +15,7 @@
 
 
     <script>
-        let pageCounter = 0;
+        // let pageCounter = 0;
         // let fullPlaylist = []
         let videoIdArray = []
         function getInfo(){
@@ -57,18 +57,21 @@
             })
         }
 
-
+        let largeArray = []
         function showVideoIds(videoIdArray){
-            videoIdArray.forEach(id => {
+            // videoIdArray.forEach(id => {
                 // console.log(id);
-                fetch('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=' + id + '&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
-                    .then(response => response.json())
-                    .then(data => {
-                        //Video array with info
-                        console.log(data)
-                    })
                 //Get videos based on ID
-            });
+                // fetch('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=' + id + '&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         //Video array with info
+                //         // console.log(data.items[0])
+                //         largeArray.push(data.items[0])
+                //     })
+            // });
+            console.log(videoIdArray);
+            // console.log(largeArray);
         }
 
     </script>
