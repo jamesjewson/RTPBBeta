@@ -9,15 +9,22 @@
 </head>
 <body>
     <main>
-        <button onclick="getInfo()">Get Playlist Info</button>
+        <button onclick="getInfo()">Get Info</button>
+        <button onclick="makeArray()">Make Array</button>
+        <!-- <button onclick="getArray()">Get Array</button> -->
+        <button onclick="getVideoIds()">Get Video Array</button>
+        <!-- <button onclick="clearLocal()">Clear Local Storage</button> -->
+        <button onclick="getVideoInfo()">video Info</button>
+
     </main>
 
 
 
     <script>
         // let pageCounter = 0;
-        // let fullPlaylist = []
+        let fullPlaylistInfo = []
         let videoIdArray = []
+        let allData;
         function getInfo(){
             fetch('https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId=UUsB0LwkHPWyjfZ-JwvtwEXw&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I')
             .then(response => response.json())
@@ -38,14 +45,17 @@
             .then(response => response.json())
             .then(data => {
                 let playlist = data
+                allData = data
                 // console.log(data.items)
                 let items = data.items
                 // console.log(items);
                 items.forEach(item => {
                     // console.log(item.contentDetails.videoId);
                     videoIdArray.push(item.contentDetails.videoId)
+                    fullPlaylistInfo.push(item)
                 });
-                if(playlist.nextPageToken !== null && playlist.nextPageToken !== "" && playlist.nextPageToken !== undefined && pageCounter < 100){
+
+                if(playlist.nextPageToken !== null && playlist.nextPageToken !== "" && playlist.nextPageToken !== undefined){
                     nextPage = playlist.nextPageToken
                     getNextInfo(nextPage)
                 }else{
@@ -70,9 +80,82 @@
                 //         largeArray.push(data.items[0])
                 //     })
             // });
-            console.log(videoIdArray);
+            localStorage.setItem('videoIdArray', JSON.stringify(videoIdArray));
+            localStorage.setItem('fullPlaylistInfo', JSON.stringify(fullPlaylistInfo));
+            // console.log(videoIdArray);
             // console.log(largeArray);
         }
+
+
+        function makeArray(){
+            localStorage.setItem('testArray', JSON.stringify(['hello', 'howdy', 'wazzup']))
+        }
+
+        function getArray(){
+            const testArray = JSON.parse(localStorage.getItem("testArray"))
+            console.log(testArray);
+        }
+
+        function getVideoIds(){
+            const idArray = JSON.parse(localStorage.getItem("videoIdArray"));
+            // use fullPlaylisInfo
+            const fullPlaylistInfo = JSON.parse(localStorage.getItem("fullPlaylistInfo"));
+            console.log(idArray);
+            console.log(fullPlaylistInfo);
+            
+        }
+
+        function getVideoInfo() {
+            let ids = "";
+            const fullPlaylistInfo = JSON.parse(localStorage.getItem("fullPlaylistInfo"));
+            // console.log(fullPlaylistInfo);
+            const idArray = JSON.parse(localStorage.getItem("videoIdArray"));
+            console.log(idArray);
+                for(let i= 0; i <45; i++){
+                    if(idArray[i] !== undefined){
+                        ids += "&id=" + idArray[i]
+                        console.log(idArray[i]);
+                    }
+                }
+                console.log(ids);
+                url = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=contentDetails" + ids + "&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I"
+                // url = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=contentDetails&id=Q9L4MwbM4o4&id=rV5Zw54IIvg&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I"
+            // fetch(url)
+            // .then(response => response.json())
+            // .then(data => {
+            //     console.log(data);
+            // })
+            console.log(url);
+            getNextVideoInfo(idArray)
+        }
+
+        function getNextVideoInfo(idArray){
+            ids = "";
+            for(let i= 45; i <90; i++){
+                    if(idArray[i] !== undefined){
+                        ids += "&id=" + idArray[i]
+                        console.log(idArray[i]);
+                    }
+                }
+                console.log(ids);
+                url = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=contentDetails" + ids + "&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I"
+                // url = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=contentDetails&id=Q9L4MwbM4o4&id=rV5Zw54IIvg&key=AIzaSyDL-e9DT1JlvgMudAcNovhYLfJU7-0fu6I"
+            // fetch(url)
+            // .then(response => response.json())
+            // .then(data => {
+            //     console.log(data);
+            // })
+            console.log(url);   
+        }
+
+        function clearLocal(){
+            localStorage.clear();
+        }
+
+
+        //Get playlist of all video ID's (done)
+        //foreach videoID, add &videoId={videoId}
+        // push result to mongoDB where it can be accessed
 
     </script>
 </body>
